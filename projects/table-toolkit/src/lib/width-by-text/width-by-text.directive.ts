@@ -3,6 +3,7 @@ import { Directive, ElementRef, Inject, Input, Optional, Renderer2 } from '@angu
 import { ANGULAR_TOOLKIT_WIDTH_BY_TEXT_CONFIGURATION, PartialWithByTextConfiguration, WidthByTextConfiguration } from './width-by-text.configuration';
 import { DataRefreshStrategy } from './data-refresh-strategy';
 
+
 @Directive({
   selector: '[atWidthByText]',
   exportAs: 'atWidthByText'
@@ -12,9 +13,16 @@ export class WidthByTextDirective<T extends object> {
 
 //#region Data members
 
+  // The data to calculate the length upon.
   private _data: Array<T> = [];
+
+  // Canvas to apply the text in order to measure the html element width.
   private _canvas: HTMLCanvasElement = null;
+
+  // The text of the header column.
   private _headerText: string = '';
+
+  // directive configuration.
   private _config: WidthByTextConfiguration;
 
   //#endregion
@@ -32,24 +40,45 @@ export class WidthByTextDirective<T extends object> {
 
 
   // #region Properties
+
+  /* @template T
+  @type {Array<{T}>} - The data to calculate the length upon.
+  */
   @Input()
   set data(value: Array<T>) {
     this.refreshWidthIfRequired(value);
   }
 
+  /* 
+  @type {string} - The name of the member inside the data object to use in order to calculate the element length.
+  */
   @Input('atWidthByText')
   memberName = '';
 
+
+  /* 
+  @type {Func} - OPTIONAL - a function to transform non literal value into a literal one. 
+  */
   @Input()
   transformer: (data: any) => string;
 
+
+  /* 
+  @type {string} - OPTIONAL - a The text of the header column (if exists). 
+  */
   @Input()
   set headerText(value: string) {
      this._headerText = value;
      this.updateLength();
   }
   // #endregion
-
+  /**
+   * @constructor
+   * @param  {ElementRef} privateelement - The html element to act upon
+   * @param  {Renderer2} privaterenderer - The renderer to use in order to alter the element width
+   * @param  {PartialWithByTextConfiguration} config - An optional configuration (you should add a provider in order to use this option).
+   * @param  {boolean} private_emitErrors=false - OPTIONAL - wether the directive should emits warnings or errors. (you should add a provider in order to use this option).
+   */
   constructor(private element: ElementRef, private renderer: Renderer2,
     @Optional() @Inject(ANGULAR_TOOLKIT_WIDTH_BY_TEXT_CONFIGURATION) config: PartialWithByTextConfiguration,
     @Optional() @Inject(ANGULAR_TOOLKIT_EMIT_ISSUES) private _emitErrors = false) {
@@ -63,6 +92,8 @@ this._config = this.DEFAULT_CONFIGURATION;
 
 
 // #region Private Methods
+
+// Re check the longest text length and updates the style if required.
 private refreshWidthIfRequired(data: Array<T>) {
 
 const isDataCurrentlyEmpty = this._data.length === 0;
@@ -75,6 +106,7 @@ this.updateLength();
 
 }
 
+//  Update max length & style if required.
 private updateLength() {
 
 if (!this.validate()) {
@@ -86,6 +118,8 @@ const maxLength = this.getMaxLength() + this._config.paddingLeft + this._config.
 this.renderer.setStyle(this.element.nativeElement, 'width', `${maxLength}px`);
 }
 
+
+// Validate all inputs are valid.
 private validate(): boolean {
 
 if (!this._data || this._data.length === 0) {
@@ -113,6 +147,7 @@ return false;
 return true;
 }
 
+// Getting the maximum length among the 5 longest texts of the provided data
 private getMaxLength() {
 if (!this._canvas) {
 this._canvas = document.createElement('canvas');

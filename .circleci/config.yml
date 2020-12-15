@@ -4,15 +4,24 @@ version: 2.1
 orbs:
   # Declare a dependency on the welcome-orb
   node: circleci/node@2.0.2
+
+jobs:
+  checkout:
+    steps:
+      - checkout
+  build:
+    steps:
+      - node/install
+      - run build
+    test:
+      steps:
+          - node/install
+          - run test 
 # Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
-  angular-toolkit:
-    # Run the welcome/run job in its own container
+  angular-toolkit-ci:
     jobs:
-      ci:
-        steps:
-          - checkout
-          - node/install
-          - run build
-          - run test 
+      - build
+      - test
+   

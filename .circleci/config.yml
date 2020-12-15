@@ -10,9 +10,6 @@ workflows:
   build-toolkit:
     # Run the welcome/run job in its own container
     jobs:
-    docker:
-      - image: 'cimg/base:stable'
-    steps:
       - checkout
       - node/install
       - run build

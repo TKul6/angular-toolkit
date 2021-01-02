@@ -1,5 +1,5 @@
-import { DataRefreshStrategy } from '@angular-toolkit/table';
 import { InjectionToken } from '@angular/core';
+import { DataRefreshStrategy } from './data-refresh-strategy';
 
 /* Optional configuration to manage the textByWidth directive*/
 export interface WidthByTextConfiguration {

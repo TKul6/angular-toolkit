@@ -11,13 +11,14 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: npm run test
+      - run: npm run build
   test:
+    working_directory: ~/angular-toolkit
     docker:
       - image: circleci/node:14.15-browsers
     steps:
       - run: npm install
-      - run: npm run build
+      - run: npm run test
 
   # "build":
   #    docker:

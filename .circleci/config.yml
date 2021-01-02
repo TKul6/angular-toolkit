@@ -21,25 +21,10 @@ jobs:
       - run: npm install
       - run: npm run test
 
-  # "build":
-  #    docker:
-  #     - image: circleci/node:8-browsers
-  #   steps:
-  #     - checkout
-  #     - node/install
-  #     - run npm run build
-  # "test":
-  #   docker:
-  #     - image: circleci/node:8-browsers
-  #   steps:
-  #     - checkout
-  #     - node/install
-  #     - run npm run test 
-# Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
   angular-toolkit-ci:
     jobs:
-      - build
       - test
+      - build
    
